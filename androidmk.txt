@@ -1,0 +1,54 @@
+LOCAL_PATH := $(call my-dir)
+include $(CLEAR_VARS)
+NDK_PATH = /Volumes/DATA/Tools/android-ndk-r13b
+SO_PATH = $(NDK_PATH)/4.9/libs
+JNI_PATH = /Volumes/DATA/Android_Project/ZARTracker/app/src/main/jni
+ASSIMP_INC_PATH = /Volumes/DATA/Android_Project/ZARTracker/app/src/main/jni/assimp-3.2
+ASSIMP_LIB_PATH = $(ASSIMP_INC_PATH)/libs/armeabi-v7a
+ASSIMP_SRC_PATH = $(ASSIMP_INC_PATH)/include/assimp
+OPENCV_LIB_TYPE=SHARED
+LOCAL_EXPORT_C_INCLUDES  += /Volumes/DATA/Android_Project/ZARTracker/app/native/jni/include
+LOCAL_EXPORT_C_INCLUDES  += /Volumes/DATA/Android_Project/ZARTracker/app/jni/include/assimp
+LOCAL_EXPORT_C_INCLUDES  += $(NDK_PATH)/4.9/include
+LOCAL_EXPORT_C_INCLUDES  += $(NDK_PATH)/4.9/include/bits
+
+CRYPTOPP_INCL   := /usr/local/cryptopp-android-9/include
+CRYPTOPP_LIB    := /usr/local/cryptopp-android-9/lib
+
+STLPORT_INCL    := /opt/android-ndk-r9/sources/cxx-stl/stlport/stlport
+STLPORT_LIB     := /opt/android-ndk-r9/sources/cxx-stl/stlport/libs/armeabi
+
+APP_STL         := stlport_shared
+APP_MODULES     := stlport_shared cryptopp
+
+LOCAL_CPP_FEATURES := rtti exceptions
+
+LOCAL_C_INCLUDES := $(CRYPTOPP_INCL) $(CRYPTOPP_INCL)/cryptopp $(STLPORT_INCL)
+
+LOCAL_LDFLAGS  := -L $(CRYPTOPP_LIB) -L $(STLPORT_LIB)
+LOCAL_LDLIBS   := -lcryptopp -lstlport_shared -llog -landroid
+
+
+include /Volumes/DATA/Android_Project/ZARTracker/app/native/jni/OpenCV.mk
+
+LOCAL_CFLAGS    += -std=c++11 -frtti -fexceptions -fpermissive
+LOCAL_LDLIBS    += -llog -lGLESv2 -lEGL -landroid -lOpenSLES -lGLESv1_CM -lz
+
+
+LOCAL_MODULE := ZARTracker
+LOCAL_SRC_FILES := DanielLibrary.cpp \
+                   tracker/ZTracker.cpp \
+                   tracker/AR2D.cpp \
+                   tracker/Geometry.cpp \
+                   tracker/Tracking.cpp \
+                   cv_code.cpp \
+                   gl_code.cpp \
+                   math_3d.cpp \
+                   mesh.cpp    \
+                   texture.cpp
+LOCAL_SRC_FILES := $(JNI_PATH)/DanielLibrary.cpp
+
+LOCAL_SRC_FILES := $(ASSIMP_SRC_PATH)/matrix4x4.h
+
+
+include $(BUILD_SHARED_LIBRARY)
